@@ -21,14 +21,17 @@ public class AlphaBetaChess {
 	        {" "," "," "," "," "," "," "," "},
 	        {"P","P","P","P","P","P","P","P"},
 	        {"R","K","B","Q","A","B","K","R"}};
+
+	static int kingPositionA, kingPositiona;	//white and black king's position in the array
 	
 	public static void main(String[] args) {
-		JFrame f=new JFrame("Chess");
+		/*JFrame f=new JFrame("Chess");
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		UserInterface ui=new UserInterface();
 		f.add(ui);
 		f.setSize(500, 500);
-		f.setVisible(true);
+		f.setVisible(true);*/
+		System.out.println(possibleMoves());
 	}
 	
 	//returns previous position(row1,column1), current position (row2,column2) and the captured piece if any else space
@@ -88,9 +91,37 @@ public class AlphaBetaChess {
 	}
 	
 	public static String possibleA(int i){
-		String moveList="";
-		
+		String moveList="",oldPiece;
+		int kingTemp;
+		int r=i/8,c=i%8;	//row and column position of the king
+		for(int j=0;j<9;j++){
+			if(j!=4){		//avoid checking for the place where king is already placed
+				try {
+					if(Character.isLowerCase(chessBoard[r-1+j/3][c-1+j%3].charAt(0)) || " ".equals(chessBoard[r-1+j/3][c-1+j%3])){
+						oldPiece=chessBoard[r-1+j/3][c-1+j%3];
+						chessBoard[r][c]=" ";
+						chessBoard[r-1+j/3][c-1+j%3]="A";
+						kingTemp=kingPositionA;	
+						kingPositionA=i+(j/3)*8+j%3-9;
+						if(kingSafe()){
+							moveList=moveList+r+c+(r-1+j/3)+(c-1+j%3)+oldPiece;
+						}
+						chessBoard[r][c]="A";
+						chessBoard[r-1+j/3][c-1+j%3]=oldPiece;
+						kingPositionA=kingTemp;
+					}						
+				} catch (Exception e) {
+						
+				}			
+			}
+		}
+		//need to add castling
 		return moveList;
+	}
+	
+	public static boolean kingSafe(){
+		
+		return true;
 	}
 
 }
