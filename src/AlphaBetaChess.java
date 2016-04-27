@@ -85,7 +85,40 @@ public class AlphaBetaChess {
 	}
 	
 	public static String possibleQ(int i){
-		String moveList="";
+		String moveList="",oldPiece;		
+		int r=i/8,c=i%8;	//row and column position of the queen
+		int temp=1;
+		
+		//loops for checking the horizontal, vertical, diagonal both ways directions for the queen
+		
+		for(int j=-1;j<=1;j++){
+			for(int k=-1;k<=1;k++){
+				try {
+					while(" ".equals(chessBoard[r+temp*j][c+temp*k])){
+						oldPiece=chessBoard[r+temp*j][c+temp*k];
+						chessBoard[r][c]=" ";
+						chessBoard[r+temp*j][c+temp*k]="Q";
+						if(kingSafe()){
+							moveList=moveList+r+c+(r+temp*j)+(c+temp*k)+oldPiece;
+						}
+						chessBoard[r+temp*j][c+temp*k]=oldPiece;
+						chessBoard[r][c]="Q";
+						temp++;
+					}
+					if(Character.isLowerCase(chessBoard[r+temp*j][c+temp*k].charAt(0))){
+						oldPiece=chessBoard[r+temp*j][c+temp*k];
+						chessBoard[r][c]=" ";
+						chessBoard[r+temp*j][c+temp*k]="Q";
+						if(kingSafe()){
+							moveList=moveList+r+c+(r+temp*j)+(c+temp*k)+oldPiece;
+						}
+						chessBoard[r+temp*j][c+temp*k]=oldPiece;
+						chessBoard[r][c]="Q";						
+					}
+				} catch (Exception e) {}
+				temp=1;
+			}
+		}
 		
 		return moveList;
 	}
@@ -110,9 +143,7 @@ public class AlphaBetaChess {
 						chessBoard[r-1+j/3][c-1+j%3]=oldPiece;
 						kingPositionA=kingTemp;
 					}						
-				} catch (Exception e) {
-						
-				}			
+				} catch (Exception e) {}			
 			}
 		}
 		//need to add castling
