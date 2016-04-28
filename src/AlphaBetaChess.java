@@ -125,7 +125,41 @@ public class AlphaBetaChess {
 	}
 	
 	public static String possibleK(int i){
-		String moveList="";
+		String moveList="",oldPiece;		
+		int r=i/8,c=i%8;	//row and column position of the KNIGHT
+		
+		//loops for checking the diagonal both ways directions for the KNIGHT
+		for(int j=-1;j<=1;j+=2){
+			for(int k=-1;k<=1;k+=2){				
+				if(j!=0 || k!=0){
+					try {
+						if(Character.isLowerCase(chessBoard[r+j][c+k*2].charAt(0)) || " ".equals(chessBoard[r+j][c+k*2])){
+							oldPiece=chessBoard[r+j][c+k*2];
+							chessBoard[r][c]=" ";
+							chessBoard[r+j][c+k*2]="K";
+							if(kingSafe()){
+								moveList=moveList+r+c+(r+j)+(c+k*2)+oldPiece;
+							}
+							chessBoard[r+j][c+k*2]=oldPiece;
+							chessBoard[r][c]="K";
+						}
+					} catch (Exception e) {}
+					
+					try {
+						if(Character.isLowerCase(chessBoard[r+j*2][c+k].charAt(0)) || " ".equals(chessBoard[r+j*2][c+k])){
+							oldPiece=chessBoard[r+j*2][c+k];
+							chessBoard[r][c]=" ";
+							chessBoard[r+j*2][c+k]="K";
+							if(kingSafe()){
+								moveList=moveList+r+c+(r+j*2)+(c+k)+oldPiece;
+							}
+							chessBoard[r+j*2][c+k]=oldPiece;
+							chessBoard[r][c]="K";
+						}
+					} catch (Exception e) {}
+				}
+			}
+		}
 		
 		return moveList;
 	}
