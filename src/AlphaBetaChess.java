@@ -11,7 +11,7 @@ public class AlphaBetaChess {
 	 * king=A/a	
 	*/
 	static String chessBoard[][]={
-	        {"r","k","b","q","a","b","k","r"},
+			{"r","k","b","q","a","b","k","r"},
 	        {"p","p","p","p","p","p","p","p"},
 	        {" "," "," "," "," "," "," "," "},
 	        {" "," "," "," "," "," "," "," "},
@@ -62,8 +62,82 @@ public class AlphaBetaChess {
 	}
 	
 	public static String possibleP(int i){
-		String moveList="";
+		String moveList="",oldPiece;		
+		int r=i/8,c=i%8;	//row and column position of the PAWN
 		
+		for(int j=-1;j<=1;j+=2){
+			try {	//finding possible captures diagonally
+				if(Character.isLowerCase(chessBoard[r-1][c+j].charAt(0)) && i>=16){
+					oldPiece=chessBoard[r-1][c+j];
+					chessBoard[r][c]=" ";
+					chessBoard[r-1][c+j]="P";
+					if(kingSafe()){
+						moveList=moveList+r+c+(r-1)+(c+j)+oldPiece;
+					}					
+					chessBoard[r][c]="P";
+					chessBoard[r-1][c+j]=oldPiece;
+				}
+			}catch(Exception e){}
+			
+			//promotion & capture
+			try {	//finding possible captures diagonally
+				if(Character.isLowerCase(chessBoard[r-1][c+j].charAt(0)) && i<16){
+					String [] temp ={"Q","R","K","B"};
+					for(int k=0;k<4;k++){
+						oldPiece=chessBoard[r-1][c+j];
+						chessBoard[r][c]=" ";
+						chessBoard[r-1][c+j]=temp[k];
+						if(kingSafe()){
+							//old Column position, new Column position, captured piece, new piece, P(promotion)
+							moveList=moveList+c+(c+j)+oldPiece+temp[k]+"P";
+						}					
+						chessBoard[r][c]="P";
+						chessBoard[r-1][c+j]=oldPiece;
+					}					
+				}
+			}catch(Exception e){}
+		}
+		try {//move one up
+            if (" ".equals(chessBoard[r-1][c]) && i>=16) {
+                oldPiece=chessBoard[r-1][c];
+                chessBoard[r][c]=" ";
+                chessBoard[r-1][c]="P";
+                if (kingSafe()) {
+                	moveList=moveList+r+c+(r-1)+c+oldPiece;
+                }
+                chessBoard[r][c]="P";
+                chessBoard[r-1][c]=oldPiece;
+            }
+        } catch (Exception e) {}
+        try {//promotion && no capture
+            if (" ".equals(chessBoard[r-1][c]) && i<16) {
+                String[] temp={"Q","R","B","K"};
+                for (int k=0; k<4; k++) {
+                    oldPiece=chessBoard[r-1][c];
+                    chessBoard[r][c]=" ";
+                    chessBoard[r-1][c]=temp[k];
+                    if (kingSafe()) {
+						//old Column position, new Column position, captured piece, new piece, P(promotion)
+                    	moveList=moveList+c+c+oldPiece+temp[k]+"P";
+                    }
+                    chessBoard[r][c]="P";
+                    chessBoard[r-1][c]=oldPiece;
+                }
+            }
+        } catch (Exception e) {}
+        
+        try {//move two up
+            if (" ".equals(chessBoard[r-1][c]) && " ".equals(chessBoard[r-2][c]) && i>=48) {
+                oldPiece=chessBoard[r-2][c];
+                chessBoard[r][c]=" ";
+                chessBoard[r-2][c]="P";
+                if (kingSafe()) {
+                	moveList=moveList+r+c+(r-2)+c+oldPiece;
+                }
+                chessBoard[r][c]="P";
+                chessBoard[r-2][c]=oldPiece;
+            }
+        } catch (Exception e) {}
 		return moveList;
 	}
 	
@@ -314,6 +388,44 @@ public class AlphaBetaChess {
 			} catch (Exception e) {}
 			temp=1;									
 		}	
+		
+		//black knight
+		for(int j=-1;j<=1;j+=2){
+			for(int k=-1;k<=1;k+=2){
+					try {												
+						if("k".equals(chessBoard[kingPositionA/8+j][kingPositionA%8+k*2]))
+							return false;					
+					} catch (Exception e) {}
+					try {
+						if("k".equals(chessBoard[kingPositionA/8+j*2][kingPositionA%8+k]))
+							return false;
+					} catch (Exception e) {}							
+			}	
+		}
+		
+		//black pawn
+		if(kingPositionA>=16){
+			try {								
+				if("p".equals(chessBoard[kingPositionA/8-1][kingPositionA%8-1]))
+					return false;					
+			} catch (Exception e) {}
+			try {
+				if("p".equals(chessBoard[kingPositionA/8-1][kingPositionA%8+1]))
+					return false;
+			} catch (Exception e) {}
+		}	
+		
+		//black king
+		for(int j=-1;j<=1;j++){
+			for(int k=-1;k<=1;k++){
+				if(j!=0 || k!=0){
+					try {												
+						if("a".equals(chessBoard[kingPositionA/8+j][kingPositionA%8+k]))
+							return false;					
+					} catch (Exception e) {}
+				}
+			}	
+		}
 		
 		return true;
 	}
