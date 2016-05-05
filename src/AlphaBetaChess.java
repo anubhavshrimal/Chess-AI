@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class AlphaBetaChess {
 	
 	//array for representation of the chess board
@@ -31,10 +33,53 @@ public class AlphaBetaChess {
 		UserInterface ui=new UserInterface();
 		f.add(ui);
 		f.setSize(500, 500);
-		f.setVisible(true);*/
+		f.setVisible(true);*/		
 		System.out.println(possibleMoves());
+		makeMove("7657 ");
+		undoMove("7657 ");
+		for(int i=0;i<8;i++)
+			System.out.println(Arrays.toString(chessBoard[i]));
 	}
 	
+	public static void makeMove(String move){
+		if(move.charAt(4)!='P'){
+			//old position in array
+			int x1=Character.getNumericValue(move.charAt(0));
+			int y1=Character.getNumericValue(move.charAt(1));
+			//new position in array
+			int x2=Character.getNumericValue(move.charAt(2));
+			int y2=Character.getNumericValue(move.charAt(3));
+			
+			chessBoard[x2][y2]=chessBoard[x1][y1];
+			chessBoard[x1][y1]=" ";
+		}
+		else{	//if pawn promotion
+			int col1=Character.getNumericValue(move.charAt(0));
+			int col2=Character.getNumericValue(move.charAt(1));
+			chessBoard[1][col1]=" ";
+			chessBoard[0][col2]=String.valueOf(move.charAt(3));	//new piece value		
+		}
+	}
+	
+	public static void undoMove(String move){
+		if(move.charAt(4)!='P'){
+			//old position in array
+			int x1=Character.getNumericValue(move.charAt(0));
+			int y1=Character.getNumericValue(move.charAt(1));
+			//new position in array
+			int x2=Character.getNumericValue(move.charAt(2));
+			int y2=Character.getNumericValue(move.charAt(3));
+			
+			chessBoard[x1][y1]=chessBoard[x2][y2];
+			chessBoard[x2][y2]=String.valueOf(move.charAt(4));	//bring back the captured piece on board
+		}
+		else{	//if pawn promotion
+			int col1=Character.getNumericValue(move.charAt(0));
+			int col2=Character.getNumericValue(move.charAt(1));
+			chessBoard[1][col1]="P";
+			chessBoard[0][col2]=String.valueOf(move.charAt(2));	//new piece value		
+		}
+	}
 	//returns previous position(row1,column1), current position (row2,column2) and the captured piece if any else space
 	public static String possibleMoves(){
 		String moveList="";
