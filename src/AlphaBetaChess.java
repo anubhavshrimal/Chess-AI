@@ -23,6 +23,9 @@ public class AlphaBetaChess {
 	static int kingPositionA, kingPositiona;	//white and black king's position in the array
 	
 	public static void main(String[] args) {
+		//get initial position of white and black king
+		while(!"A".equals(chessBoard[kingPositionA/8][kingPositionA%8]))	kingPositionA++;
+		while(!"a".equals(chessBoard[kingPositiona/8][kingPositiona%8]))	kingPositiona++;
 		/*JFrame f=new JFrame("Chess");
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		UserInterface ui=new UserInterface();
@@ -272,6 +275,45 @@ public class AlphaBetaChess {
 	}
 	
 	public static boolean kingSafe(){
+		//black bishop or queen in diagonal
+		int temp=1;
+		
+		for(int j=-1;j<=1;j+=2){
+			for(int k=-1;k<=1;k+=2){
+					try {
+						while(" ".equals(chessBoard[kingPositionA/8+temp*j][kingPositionA%8+temp*k])){temp++;}
+						
+						//if black bishop or queen are at the diagonal positions
+						if("b".equals(chessBoard[kingPositionA/8+temp*j][kingPositionA%8+temp*k]) ||
+								"q".equals(chessBoard[kingPositionA/8+temp*j][kingPositionA%8+temp*k]))
+							return false;							
+					} catch (Exception e) {}
+					temp=1;				
+			}	
+		}
+		
+		//black rook or queen in vertical or horizontal	
+		for(int j=-1;j<=1;j+=2){
+			try {	//vertical
+				while(" ".equals(chessBoard[kingPositionA/8+temp*j][kingPositionA%8])){temp++;}
+				
+				//if black rook or queen are at the vertical or horizontal positions
+				if("r".equals(chessBoard[kingPositionA/8+temp*j][kingPositionA%8]) ||
+						"q".equals(chessBoard[kingPositionA/8+temp*j][kingPositionA%8]))
+					return false;							
+			} catch (Exception e) {}
+			
+			temp=1;
+			try {		//horizontal
+				while(" ".equals(chessBoard[kingPositionA/8][kingPositionA%8+temp*j])){temp++;}
+				
+				//if black rook or queen are at the vertical or horizontal positions
+				if("r".equals(chessBoard[kingPositionA/8][kingPositionA%8+temp*j]) ||
+						"q".equals(chessBoard[kingPositionA/8][kingPositionA%8+temp*j]))
+					return false;							
+			} catch (Exception e) {}
+			temp=1;									
+		}	
 		
 		return true;
 	}
