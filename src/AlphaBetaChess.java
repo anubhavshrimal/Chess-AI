@@ -37,8 +37,7 @@ public class AlphaBetaChess {
 		f.setSize(500, 500);
 		f.setVisible(true);*/		
 		System.out.println(possibleMoves());
-		makeMove("7657 ");
-		undoMove("7657 ");
+		makeMove(alphaBeta(globalDepth, Integer.MAX_VALUE, Integer.MIN_VALUE, "", 0));		
 		for(int i=0;i<8;i++)
 			System.out.println(Arrays.toString(chessBoard[i]));
 	}
@@ -67,20 +66,20 @@ public class AlphaBetaChess {
 					if(depth==globalDepth)
 						move=returnedStr.substring(0,5);	
 				}
+			}
+			else{
+				if(ratingValue>alpha){
+					alpha=ratingValue;
+					if(depth==globalDepth)
+							move=returnedStr.substring(0,5);					
+				}					
+			}
+			if(alpha>=beta){
+				if(player==0){
+					return move+beta;
+				}
 				else{
-					if(ratingValue>alpha){
-						alpha=ratingValue;
-						if(depth==globalDepth)
-								move=returnedStr.substring(0,5);					
-					}
-					if(alpha>=beta){
-						if(player==0){
-							return move+beta;
-						}
-						else{
-							return move+alpha;
-						}
-					}
+					return move+alpha;
 				}
 			}
 		}
@@ -92,15 +91,36 @@ public class AlphaBetaChess {
 		}
 	}
 	
+	//method to swap the pieces i.e. to flip the board to the 2nd player's side
 	public static void flipBoard(){
-		
+		String temp;
+		int r,c;
+		for (int i = 0; i < 32; i++) {
+			r=i/8;
+			c=i%8;
+			if(Character.isUpperCase(chessBoard[r][c].charAt(0))){
+				temp=chessBoard[r][c].toLowerCase();
+			}
+			else{
+				temp=chessBoard[r][c].toUpperCase();
+			}
+			if(Character.isUpperCase(chessBoard[7-r][7-c].charAt(0))){
+				chessBoard[r][c]=chessBoard[7-r][7-c].toLowerCase();
+			}
+			else{
+				chessBoard[r][c]=chessBoard[7-r][7-c].toLowerCase();
+			}
+			chessBoard[r][c]=temp;
+		}
+		//to update the king's position of the global variables w.r.t black and white kings in flipped board
+		int kingPosTemp=kingPositionA;
+		kingPositionA=63-kingPositiona;
+		kingPositiona=63-kingPosTemp;
 	}
 	
 	//returns the rating of the move made
 	public static int rating(){
-		System.out.print("Enter the score: ");
-		Scanner sc=new Scanner(System.in);
-		return sc.nextInt();
+		return 0;
 	}
 	
 	public static void makeMove(String move){
@@ -111,9 +131,11 @@ public class AlphaBetaChess {
 			//new position in array
 			int x2=Character.getNumericValue(move.charAt(2));
 			int y2=Character.getNumericValue(move.charAt(3));
-			
 			chessBoard[x2][y2]=chessBoard[x1][y1];
 			chessBoard[x1][y1]=" ";
+			if("A".equals(chessBoard[x2][y2])){
+				kingPositionA=8*x2+y2;
+			}
 		}
 		else{	//if pawn promotion
 			int col1=Character.getNumericValue(move.charAt(0));
@@ -134,6 +156,9 @@ public class AlphaBetaChess {
 			
 			chessBoard[x1][y1]=chessBoard[x2][y2];
 			chessBoard[x2][y2]=String.valueOf(move.charAt(4));	//bring back the captured piece on board
+			if("A".equals(chessBoard[x1][y1])){
+				kingPositionA=8*x1+y1;
+			}
 		}
 		else{	//if pawn promotion
 			int col1=Character.getNumericValue(move.charAt(0));
