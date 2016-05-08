@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Scanner;
 
 public class AlphaBetaChess {
 	
@@ -23,6 +24,7 @@ public class AlphaBetaChess {
 	        {"R","K","B","Q","A","B","K","R"}};
 
 	static int kingPositionA, kingPositiona;	//white and black king's position in the array
+	static int globalDepth=4;
 	
 	public static void main(String[] args) {
 		//get initial position of white and black king
@@ -39,6 +41,66 @@ public class AlphaBetaChess {
 		undoMove("7657 ");
 		for(int i=0;i<8;i++)
 			System.out.println(Arrays.toString(chessBoard[i]));
+	}
+	
+	//returns a String with move , captured piece and a score value of that move
+	public static String alphaBeta(int depth, int beta, int alpha, String move, int player){
+		String moveList=possibleMoves();
+		if(depth==0 || moveList.length()==0)	//limiting cases if searching depth becomes 0 or no possible moves left (eg. checkmate)
+			return move+(rating()*(player*2-1));
+		
+		player=1-player;	//1 or 0
+		
+		String returnedStr="";
+		int ratingValue;
+		for(int i=0;i<moveList.length();i+=5){
+			makeMove(moveList.substring(i, i+5));
+			flipBoard();
+			returnedStr=alphaBeta(depth-1, beta, alpha, moveList.substring(i,i+5), player); //recursive call for more depth
+			ratingValue=Integer.valueOf(returnedStr.substring(5));	//get the value of the rating from the depth
+			flipBoard();
+			undoMove(moveList.substring(i,i+5));
+			
+			if(player==0){
+				if(ratingValue<=beta){
+					beta=ratingValue;
+					if(depth==globalDepth)
+						move=returnedStr.substring(0,5);	
+				}
+				else{
+					if(ratingValue>alpha){
+						alpha=ratingValue;
+						if(depth==globalDepth)
+								move=returnedStr.substring(0,5);					
+					}
+					if(alpha>=beta){
+						if(player==0){
+							return move+beta;
+						}
+						else{
+							return move+alpha;
+						}
+					}
+				}
+			}
+		}
+		if(player==0){
+			return move+beta;
+		}
+		else{
+			return move+alpha;
+		}
+	}
+	
+	public static void flipBoard(){
+		
+	}
+	
+	//returns the rating of the move made
+	public static int rating(){
+		System.out.print("Enter the score: ");
+		Scanner sc=new Scanner(System.in);
+		return sc.nextInt();
 	}
 	
 	public static void makeMove(String move){
