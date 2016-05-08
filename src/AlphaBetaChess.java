@@ -1,6 +1,8 @@
 import java.util.Arrays;
 import java.util.Scanner;
 
+import javax.swing.JFrame;
+
 public class AlphaBetaChess {
 	
 	//array for representation of the chess board
@@ -30,16 +32,19 @@ public class AlphaBetaChess {
 		//get initial position of white and black king
 		while(!"A".equals(chessBoard[kingPositionA/8][kingPositionA%8]))	kingPositionA++;
 		while(!"a".equals(chessBoard[kingPositiona/8][kingPositiona%8]))	kingPositiona++;
-		/*JFrame f=new JFrame("Chess");
+		
+		JFrame f=new JFrame("Chess");
 		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		UserInterface ui=new UserInterface();
 		f.add(ui);
 		f.setSize(500, 500);
-		f.setVisible(true);*/		
+		f.setVisible(true);
 		System.out.println(possibleMoves());
 		makeMove(alphaBeta(globalDepth, Integer.MAX_VALUE, Integer.MIN_VALUE, "", 0));		
 		for(int i=0;i<8;i++)
 			System.out.println(Arrays.toString(chessBoard[i]));
+		f.repaint();
+		
 	}
 	
 	//returns a String with move , captured piece and a score value of that move
