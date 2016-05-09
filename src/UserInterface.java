@@ -4,15 +4,17 @@ import java.awt.Image;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
-
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
 public class UserInterface extends JPanel implements MouseListener, MouseMotionListener{
 
+	static int oldMouseX,oldMouseY,newMouseX, newMouseY;
 	static int squareSize=32;
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		this.addMouseListener(this);
+        this.addMouseMotionListener(this);
 		for(int i=0;i<64;i+=2){
 			g.setColor(new Color(255,200,100));
 			g.fillRect((i%8+(i/8)%2)*squareSize, (i/8)*squareSize, squareSize, squareSize);
@@ -76,14 +78,33 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		if(e.getX()<8*squareSize && e.getY()<8*squareSize){//if mouse is pressed inside the chess board
+			oldMouseX=e.getX()/squareSize;
+			oldMouseY=e.getY()/squareSize;
+		}		
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		if(e.getX()<8*squareSize && e.getY()<8*squareSize){//if mouse is released inside the chess board
+			newMouseX=e.getX()/squareSize;
+			newMouseY=e.getY()/squareSize;
+			String move;
+			if(e.getButton()==MouseEvent.BUTTON1){
+				if(newMouseY==0 && oldMouseY==1 && "P".equals(AlphaBetaChess.chessBoard[oldMouseY][oldMouseX])){
+					//if pawn promotion
+					move=""+oldMouseX+newMouseX+AlphaBetaChess.chessBoard[newMouseY][newMouseX]+"QP";
+				}	
+				else{	//if a regular move
+					move=""+oldMouseY+oldMouseX+newMouseY+newMouseX+AlphaBetaChess.chessBoard[newMouseY][newMouseX];
+				}							
+				String userPossibleMoves=AlphaBetaChess.possibleMoves();
+				if(userPossibleMoves.replaceAll(move, "").length()<userPossibleMoves.length()){
+					AlphaBetaChess.makeMove(move);
+					repaint();
+				}
+			}
+		}		
 	}
 
 	@Override
