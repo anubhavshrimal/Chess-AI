@@ -2,6 +2,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class AlphaBetaChess {
 	
@@ -26,7 +27,8 @@ public class AlphaBetaChess {
 	        {"R","K","B","Q","A","B","K","R"}};
 
 	static int kingPositionA, kingPositiona;	//white and black king's position in the array
-	static int globalDepth=4;
+	static int globalDepth=4;	//depth of best move searching
+	static int playerColor=-1;	//1=player as white 0=player as black
 	
 	public static void main(String[] args) {
 		//get initial position of white and black king
@@ -40,7 +42,15 @@ public class AlphaBetaChess {
 		f.setSize(500, 500);
 		f.setVisible(true);
 		System.out.println(possibleMoves());
-		makeMove(alphaBeta(globalDepth, Integer.MAX_VALUE, Integer.MIN_VALUE, "", 0));		
+		
+		playerColor=JOptionPane.showOptionDialog(null, "Do you want to play the first move?", 
+				"Choose an option", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, JOptionPane.YES_OPTION);
+		if(playerColor==JOptionPane.NO_OPTION){
+			makeMove(alphaBeta(globalDepth, Integer.MAX_VALUE, Integer.MIN_VALUE, "", 0));
+			flipBoard();
+			f.repaint();
+		}
+				
 		for(int i=0;i<8;i++)
 			System.out.println(Arrays.toString(chessBoard[i]));
 		f.repaint();
@@ -113,9 +123,9 @@ public class AlphaBetaChess {
 				chessBoard[r][c]=chessBoard[7-r][7-c].toLowerCase();
 			}
 			else{
-				chessBoard[r][c]=chessBoard[7-r][7-c].toLowerCase();
+				chessBoard[r][c]=chessBoard[7-r][7-c].toUpperCase();
 			}
-			chessBoard[r][c]=temp;
+			chessBoard[7-r][7-c]=temp;
 		}
 		//to update the king's position of the global variables w.r.t black and white kings in flipped board
 		int kingPosTemp=kingPositionA;
