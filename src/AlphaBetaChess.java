@@ -60,8 +60,8 @@ public class AlphaBetaChess {
 	//returns a String with move , captured piece and a score value of that move
 	public static String alphaBeta(int depth, int beta, int alpha, String move, int player){
 		String moveList=possibleMoves();
-		if(depth==0 || moveList.length()==0)	//limiting cases if searching depth becomes 0 or no possible moves left (eg. checkmate)
-			return move+(rating()*(player*2-1));
+		if(depth==0 || moveList.length()==0)	//limiting cases if searching depth becomes 0 or no possible moves are left (eg. checkmate)
+			return move+(Rating.rating(moveList.length(),depth)*(player*2-1));
 		
 		player=1-player;	//1 or 0
 		
@@ -131,11 +131,6 @@ public class AlphaBetaChess {
 		int kingPosTemp=kingPositionA;
 		kingPositionA=63-kingPositiona;
 		kingPositiona=63-kingPosTemp;
-	}
-	
-	//returns the rating of the move made
-	public static int rating(){
-		return 0;
 	}
 	
 	public static void makeMove(String move){
