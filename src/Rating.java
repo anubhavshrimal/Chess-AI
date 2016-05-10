@@ -1,11 +1,12 @@
 
 public class Rating {
 
-	public static int rating(int moveList,int depth){
-		int rating=0; 
-		rating+=rateAttack()+ratePieceAvailability()+rateMovability()+ratePositional();
+	public static int rating(int movesAvailableCount,int depth){
+		int rating=0;
+		
+		rating+=rateAttack()+ratePieceAvailability()+rateMovability(movesAvailableCount,depth)+ratePositional();
 		AlphaBetaChess.flipBoard();
-		rating-=rateAttack()-ratePieceAvailability()-rateMovability()-ratePositional();
+		rating-=rateAttack()-ratePieceAvailability()-rateMovability(movesAvailableCount,depth)-ratePositional();
 		AlphaBetaChess.flipBoard();
 		return -(rating+depth*50);
 	}
@@ -14,6 +15,7 @@ public class Rating {
 		return 0;
 	}
 	
+	//rates according to the chess pieces availability on the board 
 	public static int ratePieceAvailability(){
 		int rating=0, bishopCount=0;
         for (int i=0;i<64;i++) {
@@ -38,7 +40,17 @@ public class Rating {
         return rating;
 	}
 	
-	public static int rateMovability(){
+	//rates according to the flexibilty in possible moves
+	public static int rateMovability(int movesAvailableCount,int depth){
+		int rating=0;
+		rating+=movesAvailableCount;	//5 points for each possible move
+		if(movesAvailableCount==0){	//checkmate or stalemate condition
+			if(!AlphaBetaChess.kingSafe()){	//checkmate
+				rating+=-200000*depth;
+			}else {	//stalemate
+				rating+=-150000*depth;
+			}
+		}
 		return 0;
 	}
 	
