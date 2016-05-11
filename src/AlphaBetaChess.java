@@ -3,6 +3,7 @@ import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
 
 public class AlphaBetaChess {
 	
@@ -66,10 +67,13 @@ public class AlphaBetaChess {
 		if(depth==0 || moveList.length()==0)	//limiting cases if searching depth becomes 0 or no possible moves are left (eg. checkmate)
 			return move+(Rating.rating(moveList.length(),depth)*(player*2-1));
 		
+		moveList=sortMoves(moveList);	//sort the moves to put the best moves in the front to improve speed
+		
 		player=1-player;	//1 or 0
 		
 		String returnedStr="";
 		int ratingValue;
+		
 		for(int i=0;i<moveList.length();i+=5){
 			makeMove(moveList.substring(i, i+5));
 			flipBoard();
@@ -158,12 +162,26 @@ public class AlphaBetaChess {
 		}
 	}
 	
-	public static String sortMoves(String moveList){
-		String newMoveList="";
-		int [] ratingList=new int[moveList.length()/5];
-		return newMoveList;
-	}
-	
+	 public static String sortMoves(String list) {
+        int[] score=new int [list.length()/5];
+        for (int i=0;i<list.length();i+=5) {
+            makeMove(list.substring(i, i+5));
+            score[i/5]=-Rating.rating(-1, 0);
+            undoMove(list.substring(i, i+5));
+        }
+        String newListA="", newListB=list;
+        for (int i=0;i<Math.min(6, list.length()/5);i++) {//first few moves only
+            int max=-1000000, maxLocation=0;
+            for (int j=0;j<list.length()/5;j++) {
+                if (score[j]>max) {max=score[j]; maxLocation=j;}
+            }
+            score[maxLocation]=-1000000;
+            newListA+=list.substring(maxLocation*5,maxLocation*5+5);
+            newListB=newListB.replace(list.substring(maxLocation*5,maxLocation*5+5), "");
+        }
+        return newListA+newListB;
+	 }
+	 
 	public static void undoMove(String move){
 		if(move.charAt(4)!='P'){
 			//old position in array
