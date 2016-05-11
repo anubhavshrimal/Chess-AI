@@ -1,9 +1,6 @@
 import java.util.Arrays;
-import java.util.Scanner;
-
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane.MaximizeAction;
 
 public class AlphaBetaChess {
 	
