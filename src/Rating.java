@@ -12,7 +12,37 @@ public class Rating {
 	}
 	
 	public static int rateAttack(){
-		return 0;
+		int rating=0;
+		int tempKingPos=AlphaBetaChess.kingPositionA;
+		
+        for (int i=0;i<64;i++) {
+            switch (AlphaBetaChess.chessBoard[i/8][i%8]) {
+                case "P": AlphaBetaChess.kingPositionA=i;             
+	                	if(!AlphaBetaChess.kingSafe())
+	                		rating-=64;
+	                    break;
+                case "R": AlphaBetaChess.kingPositionA=i;             
+		            	if(!AlphaBetaChess.kingSafe())
+		            		rating-=500;
+		                break;                    
+                case "K": AlphaBetaChess.kingPositionA=i;             
+		            	if(!AlphaBetaChess.kingSafe())
+		            		rating-=300;
+                    break;
+                case "B": AlphaBetaChess.kingPositionA=i;             
+		            	if(!AlphaBetaChess.kingSafe())
+		            		rating-=300;
+                    break;
+                case "Q": AlphaBetaChess.kingPositionA=i;             
+		            	if(!AlphaBetaChess.kingSafe())
+		            		rating-=900;
+                    break;
+            }
+        }
+        AlphaBetaChess.kingPositionA=tempKingPos;
+        if(!AlphaBetaChess.kingSafe())
+        	rating-=200;
+        return rating/2;
 	}
 	
 	//rates according to the chess pieces availability on the board 
@@ -51,7 +81,7 @@ public class Rating {
 				rating+=-150000*depth;
 			}
 		}
-		return 0;
+		return rating;
 	}
 	
 	public static int ratePositional(){

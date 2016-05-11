@@ -46,7 +46,10 @@ public class AlphaBetaChess {
 		playerColor=JOptionPane.showOptionDialog(null, "Do you want to play the first move?", 
 				"Choose an option", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, JOptionPane.YES_OPTION);
 		if(playerColor==JOptionPane.NO_OPTION){
+			long startTime=System.currentTimeMillis();
 			makeMove(alphaBeta(globalDepth, Integer.MAX_VALUE, Integer.MIN_VALUE, "", 0));
+			long endTime=System.currentTimeMillis();
+			System.out.println("that took "+((endTime-startTime)/1000.0)+" seconds");
 			flipBoard();
 			f.repaint();
 		}
@@ -153,6 +156,12 @@ public class AlphaBetaChess {
 			chessBoard[1][col1]=" ";
 			chessBoard[0][col2]=String.valueOf(move.charAt(3));	//new piece value		
 		}
+	}
+	
+	public static String sortMoves(String moveList){
+		String newMoveList="";
+		int [] ratingList=new int[moveList.length()/5];
+		return newMoveList;
 	}
 	
 	public static void undoMove(String move){
