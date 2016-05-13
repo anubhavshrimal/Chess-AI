@@ -10,7 +10,7 @@ import javax.swing.JPanel;
 public class UserInterface extends JPanel implements MouseListener, MouseMotionListener{
 
 	static int oldMouseX,oldMouseY,newMouseX, newMouseY;
-	static int squareSize=32;
+	static int squareSize=63;
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		this.addMouseListener(this);
@@ -60,8 +60,10 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
+		if(e.getX()<8*squareSize && e.getY()<8*squareSize){//if mouse is dragged inside the chess board
+			oldMouseX=e.getX()/squareSize;
+			oldMouseY=e.getY()/squareSize;
+		}			
 	}
 
 	@Override
