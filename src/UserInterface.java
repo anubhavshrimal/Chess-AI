@@ -23,13 +23,41 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
 		}
 		Image chessPiecesImage;
         chessPiecesImage=new ImageIcon("ChessPieces.png").getImage();
-        int x,y;
+        int x,y,x1=-1,y1=-1;
+        
+      /*  switch (AlphaBetaChess.chessBoard[oldMouseX][oldMouseY]) {
+   	 	case "P": x1=5; y1=0;
+        	 break;
+        case "p": x1=5; y1=1;
+            break;
+        case "R": x1=2; y1=0;
+            break;
+        case "r": x1=2; y1=1;
+            break;
+        case "K": x1=4; y1=0;
+            break;
+        case "k": x1=4; y1=1;
+            break;
+        case "B": x1=3; y1=0;
+            break;
+        case "b": x1=3; y1=1;
+            break;
+        case "Q": x1=1; y1=0;
+            break;
+        case "q": x1=1; y1=1;
+            break;
+        case "A": x1=0; y1=0;
+            break;
+        case "a": x1=0; y1=1;
+            break;
+   	}
+        g.drawImage(chessPiecesImage, (newMouseX-15), (newMouseY-15), (newMouseX+64), (newMouseY+64), x1*64, y1*64, (x1+1)*64, (y1+1)*64, this);*/
         for(int i=0;i<64;i++){
         	x=-1;
         	y=-1;
 	    	 switch (AlphaBetaChess.chessBoard[i/8][i%8]) {
 	    	 case "P": x=5; y=0;
-             break;
+             	 break;
 	         case "p": x=5; y=1;
 	             break;
 	         case "R": x=2; y=0;
@@ -54,15 +82,16 @@ public class UserInterface extends JPanel implements MouseListener, MouseMotionL
 	             break;
 	    	}
 	    if(x!=-1 && y!=-1)
-	    	g.drawImage(chessPiecesImage, (i%8)*squareSize, (i/8)*squareSize, (i%8+1)*squareSize, (i/8+1)*squareSize, x*64, y*64, (x+1)*64, (y+1)*64, this);
+	    	g.drawImage(chessPiecesImage, (i%8)*squareSize, (i/8)*squareSize, (i%8+1)*squareSize, (i/8+1)*squareSize, x*64, y*64, (x+1)*64, (y+1)*64, this);	    	
         }
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
 		if(e.getX()<8*squareSize && e.getY()<8*squareSize){//if mouse is dragged inside the chess board
-			oldMouseX=e.getX()/squareSize;
-			oldMouseY=e.getY()/squareSize;
+			newMouseX=e.getX();
+			newMouseY=e.getY();
+			repaint();
 		}			
 	}
 
